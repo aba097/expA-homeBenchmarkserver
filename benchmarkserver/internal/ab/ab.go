@@ -27,9 +27,6 @@ func Ab(id string, url string, tagPath string, tagNum int, isRandom int, optc st
     rand.Seed(time.Now().UnixNano())
     rand.Shuffle(len(tags), func(i, j int) { tags[i], tags[j] = tags[j], tags[i] })
   }
-  for _, tag := range tags {
-    log.Println(tag)
-  }
   //-1の場合はn = size
   if tagNum == -1 {
     tagNum = len(tags)
@@ -42,11 +39,8 @@ func Ab(id string, url string, tagPath string, tagNum int, isRandom int, optc st
 
     //log.Println("<Info> id: " + id + ", selected tag: " + s)
     //-c -nを変更する
-    out, err := exec.Command("ab", "-c", optc, "-n", optn, "-t", optt, url + "?tag=" + tag).Output()
-    if err != nil {
-      log.Println(fmt.Sprintf("<Error> id: " + id + " execCmd(ab -c " + optc + " -n " + optn + " -t " + optt + " " + url + "?tag=" + tag + ")" , err))
-      return "URLが不明です", "0.00"
-    }
+    //out, err := exec.Command("ab", "-c", optc, "-n", optn, "-t", optt, url + "?tag=" + tag).Output()
+    out, _ := exec.Command("./hey", "-c", optc, "-n", optn, "-t", optt, url + "?tag=" + tag).Output()
 
     execRes := string(out)
     //abコマンドの結果を:と改行で分割する
@@ -56,14 +50,15 @@ func Ab(id string, url string, tagPath string, tagNum int, isRandom int, optc st
     //次にあるのが計測値なので，j+1して指定，空白で分割し，数値のみ取り出す
     //例：Requests per second:    720.46 [#/sec] (mean)
     for j, ss := range splitExecRes {
-      if ss == "Requests per second" {
-        sss := strings.Split(splitExecRes[j + 1], " ")
-        //log.Println("<Info> id: " + id + ", Requests per second: " + ss[len(ss) - 3])
+      if strings.Contains(ss, "Requests/sec") {
+        sss := strings.Split(splitExecRes[j + 1], "\t")
         //float64に変換して加算
-        measureTime, _ := strconv.ParseFloat(sss[len(sss) - 3], 64)
+        measureTime, _ := strconv.ParseFloat(sss[len(sss) - 1], 64)
         fmt.Printf("%s,%.2f\n",tag, measureTime)
         measureTimes += measureTime
-        break
+      }
+      if ss == "Error distribution"{
+        return "URLが不明またはタイムアウトしました", "0.00"
       }
     }
 

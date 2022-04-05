@@ -12,7 +12,33 @@ import (
 	"github.com/rs/xid"
 )
 
+var ftagPath string
+var ftagNum int
+var fisRandom int
+var foptc string
+var foptn string
+var foptt string
+
 func main() {
+
+	//flag定義
+	var (
+		tagPath = flag.String("p", "./data/searchtag.txt", "検索タグのファイルパス")
+		tagNum = flag.Int("s", -1, "検索数:-1の場合は全検索")
+		isRandom = flag.Int("r", 1, "1の場合はランダムに検索する")
+		optc = flag.Int("c", 1, "abコマンドの-c")
+		optn = flag.Int("n", 1, "abコマンドの-n")
+		optt = flag.Int("t", 1, "abコマンドの-t")
+	)
+
+	flag.Parse()
+	
+	ftagPath = *tagPath
+	ftagNum = *tagNum
+	fisRandom = *isRandom
+	foptc = strconv.Itoa(*optc)
+	foptn = strconv.Itoa(*optn)
+	foptt = strconv.Itoa(*optt)
 
 	// webフォルダにアクセスできるようにする
 	http.Handle("/css/", http.StripPrefix("/css/", http.FileServer(http.Dir("./web/css/"))))
@@ -34,10 +60,10 @@ func main() {
 //main画面
 func rootHandler(w http.ResponseWriter, r *http.Request) {
 	//index.htmlを表示させる
-	tmpl := template.Must(template.ParseFiles("./web/html/index.html"))
+	tmpl := template.Must(template.ParseFiles("./web/html/preindex.html"))
 	err := tmpl.Execute(w, nil)
 	if err != nil {
-		log.Println("<Debug> can't open ./web/html/index.htm : ", err)
+		log.Println("<Debug> can't open ./web/html/preindex.htm : ", err)
 	}
 }
 
@@ -49,19 +75,6 @@ type measureParam struct {
 
 //フォームからの入力を処理 index.jsから受け取る
 func measureHandler(w http.ResponseWriter, r *http.Request) {
-
-	//flag定義
-	var (
-		tagPath = flag.String("p", "./data/searchtag.txt", "検索タグのファイルパス")
-		tagNum = flag.Int("s", -1, "検索数:-1の場合は全検索")
-		isRandom = flag.Int("r", 1, "1の場合はランダムに検索する")
-		optc = flag.Int("c", 1, "abコマンドの-c")
-		optn = flag.Int("n", 1, "abコマンドの-n")
-		optt = flag.Int("t", 1, "abコマンドの-t")
-	)
-
-	flag.Parse()
-
 
 	//index.jsに返すJSONデータ変数
 	var ret measureParam
@@ -78,7 +91,7 @@ func measureHandler(w http.ResponseWriter, r *http.Request) {
 	log.Println("<Info> request URL: " + url + ", id: " + guid.String())
 
 	//abコマンドで負荷をかける．計測時間を返す
-	ret.Msg, ret.Time = ab.Ab(guid.String(), url, *tagPath, *tagNum, *isRandom, strconv.Itoa(*optc), strconv.Itoa(*optn), strconv.Itoa(*optt))
+	ret.Msg, ret.Time = ab.Ab(guid.String(), url, ftagPath, ftagNum, fisRandom, foptc, foptn, foptt)
 
 
 	// 構造体をJSON文字列化する
