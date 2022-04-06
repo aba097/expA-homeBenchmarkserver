@@ -32,16 +32,21 @@ func Ab(id string, url string, tagPath string, tagNum int, isRandom int, optc st
     tagNum = len(tags)
   }
 
-  for i, tag := range tags{
-    if i >= len(tags) - 1{
+  for i := 0; i < tagNum; i++ {
+    tag := tags[i]
+    
+    //最終行の空白のみを対処
+    if tag == "" {
       break
     }
 
     //log.Println("<Info> id: " + id + ", selected tag: " + s)
     //-c -nを変更する
     //out, err := exec.Command("ab", "-c", optc, "-n", optn, "-t", optt, url + "?tag=" + tag).Output()
-    out, _ := exec.Command("./hey", "-c", optc, "-n", optn, "-t", optt, url + "?tag=" + tag).Output()
-
+    out, err := exec.Command("./hey", "-c", optc, "-n", optn, "-t", optt, url + "?tag=" + tag).Output()
+    if err != nil {
+      log.Println("<Debug> id:" + id + ", exec.Command(./hey)", err)
+    }
     execRes := string(out)
     //abコマンドの結果を:と改行で分割する
     reg := "[:\n]"
@@ -58,7 +63,10 @@ func Ab(id string, url string, tagPath string, tagNum int, isRandom int, optc st
         measureTimes += measureTime
       }
       if ss == "Error distribution"{
-        return "URLが不明またはタイムアウトしました", "0.00"
+        log.Println("<Error> id: " + id + ", " + splitExecRes[j + 2] + ": " + splitExecRes[j + 3])
+
+        return "エラー " + splitExecRes[j + 2] + ": " + splitExecRes[j + 3], "0.00"
+        
       }
     }
 
