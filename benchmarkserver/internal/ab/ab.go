@@ -54,7 +54,7 @@ func Ab(id string, url string, tagPath string, tagNum int, isRandom int, optc st
     splitExecRes := regexp.MustCompile(reg).Split(execRes, -1)
     //分割したものからRequests per secondを探す
     //次にあるのが計測値なので，j+1して指定，空白で分割し，数値のみ取り出す
-    //例：Requests per second:    720.46 [#/sec] (mean)
+    //例：Requests/sec:	2.3470
     for j, ss := range splitExecRes {
       if strings.Contains(ss, "Requests/sec") {
         sss := strings.Split(splitExecRes[j + 1], "\t")
