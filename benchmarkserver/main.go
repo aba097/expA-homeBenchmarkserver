@@ -40,6 +40,12 @@ func main() {
 	foptn = strconv.Itoa(*optn)
 	foptt = strconv.Itoa(*optt)
 
+	//c > n は禁止
+	if *optc > *optn {
+		log.Println("<Debug> -c must be smaller than -n")
+		return;
+	}
+
 	// webフォルダにアクセスできるようにする
 	http.Handle("/css/", http.StripPrefix("/css/", http.FileServer(http.Dir("./web/css/"))))
 	http.Handle("/script/", http.StripPrefix("/script/", http.FileServer(http.Dir("./web/script/"))))

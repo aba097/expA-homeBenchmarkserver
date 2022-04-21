@@ -46,6 +46,7 @@ func Ab(id string, url string, tagPath string, tagNum int, isRandom int, optc st
     out, err := exec.Command("./hey", "-c", optc, "-n", optn, "-t", optt, url + "?tag=" + tag).Output()
     if err != nil {
       log.Println("<Debug> id:" + id + ", exec.Command(./hey)", err)
+      return "エラー ", "0.00"
     }
     execRes := string(out)
     //abコマンドの結果を:と改行で分割する
