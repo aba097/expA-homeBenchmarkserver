@@ -21,7 +21,11 @@ func Ab(id string, url string, tagPath string, tagNum int, isRandom int, optc st
   file, _ := ioutil.ReadFile(tagPath)
 
   tags := strings.Split(string(file), "\n")
-  tags = tags[0:len(tags) - 1]
+  //最終の空白行対応
+  if tags[len(tags) - 1] == "" {
+    tags = tags[0:len(tags) - 1]
+  }
+  
   if isRandom == 1{
     //tagsをシャッフルする
     rand.Seed(time.Now().UnixNano())
@@ -35,11 +39,6 @@ func Ab(id string, url string, tagPath string, tagNum int, isRandom int, optc st
   for i := 0; i < tagNum; i++ {
     tag := tags[i]
     
-    //最終行の空白のみを対処
-    if tag == "" {
-      break
-    }
-
     //log.Println("<Info> id: " + id + ", selected tag: " + s)
     //-c -nを変更する
     //out, err := exec.Command("ab", "-c", optc, "-n", optn, "-t", optt, url + "?tag=" + tag).Output()
