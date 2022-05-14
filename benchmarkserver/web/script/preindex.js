@@ -31,7 +31,7 @@ $(document).ready(function(){
 
 				//計測結果を表示する
 				$('#MeasureTime').text('Requests per second：' + measureResultData.Time)
-				$('#Msg').text(measureResultData.Msg)
+				$('#Msg').html(measureResultData.Msg)
 
 				setTimeout(function(){
 					//画面表示

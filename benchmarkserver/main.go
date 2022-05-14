@@ -23,12 +23,12 @@ func main() {
 
 	//flag定義
 	var (
-		tagPath = flag.String("p", "./data/searchtag.txt", "計測に使用するタグ名が記載されているファイルのPathを指定")
+		tagPath = flag.String("p", "./searchtag.txt", "計測に使用するタグ名が記載されているファイルのPathを指定")
 		tagNum = flag.Int("s", -1, "計測に使用するタグ数を指定．-1の場合はファイルに記載されているすべてタグを使用")
 		isRandom = flag.Int("r", 1, "1の場合のみ計測に使用するタグ名をランダムな順番で選択")
-		optc = flag.Int("c", 1, "テストで同時に発行するリクエストの数を数値で指定")
-		optn = flag.Int("n", 1, "テストで発行するリクエストの回数を数値で指定")
-		optt = flag.Int("t", 1, "1リクエストのタイムアウト時間を秒単位で指定")
+		optc = flag.Int("c", 5, "テストで同時に発行するリクエストの数を数値で指定")
+		optn = flag.Int("n", 10, "テストで発行するリクエストの回数を数値で指定")
+		optt = flag.Int("t", 2, "1リクエストのタイムアウト時間を秒単位で指定")
 	)
 
 	flag.Parse()

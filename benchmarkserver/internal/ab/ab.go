@@ -62,18 +62,26 @@ func Ab(id string, url string, tagPath string, tagNum int, isRandom int, optc st
         fmt.Printf("%s,%.2f\n",tag, measureTime)
         measureTimes += measureTime
       }
-      if ss == "Error distribution"{
-        log.Println("<Error> id: " + id + ", " + splitExecRes[j + 2] + ": " + splitExecRes[j + 3])
+    } 
 
-        return "エラー " + splitExecRes[j + 2] + ": " + splitExecRes[j + 3], "0.00"
-        
+    //heyに表示されるerrorチェック
+    reg = "\n"
+    splitExecRes = regexp.MustCompile(reg).Split(execRes, -1)
+    for j, ss := range splitExecRes {
+      if ss == "Error distribution:" {
+        errMsg := ""
+        for k := j + 1; k < len(splitExecRes); k += 1 {
+          errMsg += splitExecRes[k] + "<br>"
+        }
+        log.Println("<Error> id: " + id + ", " + errMsg)
+        return "エラー " + errMsg, "0.00"
       }
     }
 
     //curlでhtmlを取得し，imgタグ内の.staticflickr.comの数が100個あるか数える
     //htmlが正常か簡易的にチェック
     if !Checkhtml(id, url, tag) {
-      return "HTMLファイルが改ざんされている可能性があります", "0.00"
+      return tag + "タグのHTMLファイルの取得失敗", "0.00"
     }
 
   }
