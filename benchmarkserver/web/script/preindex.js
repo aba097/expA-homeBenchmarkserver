@@ -3,6 +3,7 @@ $(document).ready(function(){
   //計測開始ボタンクリックアクション
 	$('#startMeasureBtn').on('click', function(){
 
+		
 		console.log("startMeasureAction")
     //inputタグの入力
     console.log($('input[name="url"]').val())
