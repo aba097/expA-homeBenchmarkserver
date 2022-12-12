@@ -100,6 +100,7 @@ func measureHandler(w http.ResponseWriter, r *http.Request) {
 	ret.Msg, ret.Time = ab.Ab(guid.String(), url, ftagPath, ftagNum, fisRandom, foptc, foptn, foptt)
 
 
+	
 	// 構造体をJSON文字列化する
 	jsonBytes, _ := json.Marshal(ret)
 	// index.jsに返す
